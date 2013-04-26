@@ -50,23 +50,23 @@ public class Test {
 		byte[] second = getFileBytes("testFiles/"+subfolder+"/test"+n+"_changed."+fileType);
 		byte[] firstZipped = zipCompress(first);
 		long time = System.nanoTime();
-		Reversion r = new Reversion(first, second);
-		byte[] rbytes = r.toBytes();
-		byte[] rzipped = zipCompress(rbytes);
+		Delta d = new Delta(first, second);
+		byte[] dbytes = d.toBytes();
+		byte[] dzipped = zipCompress(dbytes);
 		time = System.nanoTime()-time;
 		System.out.println("First: " + first.length);
 		System.out.println("First Zipped: " + firstZipped.length);
 		System.out.println("Second: " + second.length);
-		System.out.println("Revision: " + rbytes.length);
-		System.out.println("Revision Zipped: " + rzipped.length);
+		System.out.println("Revision: " + dbytes.length);
+		System.out.println("Revision Zipped: " + dzipped.length);
 		System.out.println("Milliseconds To Create Revision: " + time/1000000.0);
-		System.out.println("Space Saved: " + (first.length-rbytes.length));
-		System.out.println("Percent Size: " + (r.size()/(double)first.length));
-		System.out.println("w/ Zip Space Saved: " + (first.length-rzipped.length));
-		System.out.println("w/ Zip Percent Size: " + (rzipped.length/(double)first.length));
-		System.out.println("Comp Zip Space Saved: " + (firstZipped.length-rzipped.length));
-		System.out.println("Comp Zip Percent Size: " + (rzipped.length/(double)firstZipped.length));
-		byte[] reversion = r.revert(second);
+		System.out.println("Space Saved: " + (first.length-dbytes.length));
+		System.out.println("Percent Size: " + (d.size()/(double)first.length));
+		System.out.println("w/ Zip Space Saved: " + (first.length-dzipped.length));
+		System.out.println("w/ Zip Percent Size: " + (dzipped.length/(double)first.length));
+		System.out.println("Comp Zip Space Saved: " + (firstZipped.length-dzipped.length));
+		System.out.println("Comp Zip Percent Size: " + (dzipped.length/(double)firstZipped.length));
+		byte[] reversion = d.revert(second);
 		//verify
 		if(reversion.length!=first.length)
 			System.err.println("ERROR");

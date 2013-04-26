@@ -3,7 +3,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class Reversion {
+public class Delta {
 	private static final int FLAG = 192;
 	private static final int ADD = 64;
 	private static final int COPY = 128;
@@ -13,7 +13,7 @@ public class Reversion {
 	private byte[] commands;
 	private byte[] oldData;
 	
-	public Reversion(byte[] old, byte[] current){
+	public Delta(byte[] old, byte[] current){
 		//match old and new data as closely as possible
 		int oldIndex = 0;
 		int currentIndex = 0;
