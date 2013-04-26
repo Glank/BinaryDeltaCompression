@@ -1,0 +1,215 @@
+package edu.monmouth.rri.mathmatica;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.text.DecimalFormat;
+
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+
+public class Graph extends JPanel implements MouseListener, MouseMotionListener, ActionListener{
+	private static final long serialVersionUID = -7199626683773207751L;
+	double minX, maxX, minY, maxY, xTic, yTic;
+	int width, height;
+	
+	public Graph(double minX, double maxX, double minY, double maxY, double xTic, double yTic, int width, int height){
+		this.minX = minX;
+		this.maxX = maxX;
+		this.minY = minY;
+		this.width = width;
+		this.height = height;
+		addMouseListener(this);
+		addMouseMotionListener(this);
+		setPreferredSize(new Dimension(width,height));
+	}
+	
+	public Graph(int width, int height){
+		this(-100,100,-100,100,10,10,width,height);
+	}
+	
+	public Graph(){
+		this(500,500);
+	}
+	
+	public int getDrawX(double x){
+		return (int)(width/(maxX-minX)*(x-minX)+.5);
+	}
+	
+	public int getDrawY(double y){
+		return height-(int)(height/(maxY-minY)*(y-minY)+.5);
+	}
+	
+	public double getTheoreticalX(int x){
+		return ((maxX-minX)*x)/width+minX;
+	}
+	
+	public double getTheoreticalY(int y){
+		y = height-y;
+		return ((maxY-minY)*y)/height+minY;
+	}
+	
+	public void zoomIn(){
+		double d = ((maxX-minX)*.1)/2;
+		maxX-=d;
+		minX+=d;
+		d = ((maxY-minY)*.1)/2;
+		maxY-=d;
+		minY+=d;
+		repaint();
+	}
+	
+	public void zoomOut(){
+		double d = ((maxX-minX)*.1)/2;
+		maxX+=d;
+		minX-=d;
+		d = ((maxY-minY)*.1)/2;
+		maxY+=d;
+		minY-=d;
+		repaint();
+	}
+	
+	public void focus(int drawX, int drawY){
+		double x = getTheoreticalX(drawX);
+		double y = getTheoreticalY(drawY);
+		double w = maxX-minX;
+		double h = maxY-minY;
+		minX = x-w/2;
+		maxY = y+h/2;
+		minY = y-h/2;
+		repaint();
+	}
+	
+	public void move(int dx, int dy){
+		focus(width/2+dx, height/2+dy);
+	}
+	
+	@Override
+	public void paint(Graphics g){
+		g.setColor(Color.WHITE);
+		g.fillRect(0,0,width,height);
+		DecimalFormat format = new DecimalFormat("###.###");
+		for(double d = (int)(minX/xTic)*xTic; d <= maxX; d+=xTic){
+			int top = getDrawY(0)-5;
+			int dow = getDrawY(0)+5;
+			if(dow>height){
+				top-=dow-height;
+				dow=height;
+			}
+			if(top<0){
+				dow-=top;
+				top=0;
+			}
+			int text = dow+12;
+			if(text>height){
+				text = top;
+			}
+			g.setColor(Color.LIGHT_GRAY);
+			g.drawLine(getDrawX(d), 0, getDrawX(d), height);
+			g.drawString(format.format(d), getDrawX(d)-(format.format(d).length()*7)/2, text);
+		}
+		for(double d = (int)(minY/yTic)*yTic; d <= maxY; d+=yTic){
+			int left = getDrawX(0)-5;
+			int right = getDrawX(0)+5;
+			if(right>width){
+				left-=right-width;
+				right=width;
+			}asdfasdfasfasfasdf
+			if(left<0){
+				right-=left;
+				left=0;
+			}
+			int text = right;
+			if(text+format.format(d).length()*7>width){
+				text = left-format.format(d).length()*7;
+			}
+			g.setColor(Color.LIGHT_GRAY);
+			g.drawLine(0, getDrawY(d), width, getDrawY(d));
+			g.setColor(Color.BLACK);
+			g.drawLine(left, getDrawY(d), right, getDrawY(d));
+			g.drawString(format.formasdfasdfasdfasdfat(d), text, getDrawY(d)+5);
+		}
+		g.setColor(Color.BLACK);
+		g.drawLine(getDrawX(0), 0, getDrawX(0), height);
+		g.drawLine(0, getDrawY(0), width, getDrawY(0));
+	}
+	
+	/*
+	 * returns a visible frame containing this graph
+	 */
+	public JFrame createJFrame(String title){
+		JMenuBar menuBar = new JMenuBar();
+		JMenu zoom = new JMenu("Zoom");
+		zoom.setMnemonic('Z');
+		JMenuItem zoomIn = new JMenuItem("Zoom In");
+		zoomIn.setMnemonic('I');
+		JMenuItem zoomOut = new JMenuItem("Zoom Out");
+		zoomOut.setMnemonic('O');
+		zoom.add(zoomIn);
+		zoom.add(zoomOut);
+		menuBar.add(zoom);
+		zoomIn.addActionListener(this);
+		zoomOut.addActionListener(this);
+		JFrame frame = new JFrame(title);
+		frame.setJMenuBar(menuBar);
+		frame.add(this);
+		frame.pack();
+		frame.setVisible(true);
+		return frame;
+	}
+	
+	public static void main(String[] args){
+		new Graph(0,100,0,100,10,10,500,500).createJFrame("Test of Graph");
+	}
+	
+	Point lastClick = null;
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		lastClick = new Point(arg0.getX(), arg0.getY());
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		lastClick = null;
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+		if(lastClick != null){
+			int dx = (int)lastClick.getX()-arg0.getX();
+			int dy = (int)lastClick.getY()-arg0.getY();
+			move(dx,dy);
+			lastClick = new Pointasdfasdfasdf(arg0.getX(), arg0.getY());
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getActionCommand()==null);//do nothing
+		else if(e.getActionCommand().equals("Zoom In"))
+			zoomIn();
+		else if(e.getActionCommand().equals("Zoom Out"))
+			zoomOut();
+	}
+	
+	
+}
