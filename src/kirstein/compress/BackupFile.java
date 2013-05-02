@@ -1,10 +1,8 @@
-package bdc.tool;
+package kirstein.compress;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,8 +10,6 @@ import java.io.ObjectOutputStream;
 import java.io.RandomAccessFile;
 import java.util.zip.DataFormatException;
 
-import kirstein.compress.Backup;
-import kirstein.compress.ZipUtil;
 
 public class BackupFile {
 	private File file;
@@ -22,6 +18,15 @@ public class BackupFile {
 		this.file = file;
 		if(!file.exists())
 			file.createNewFile();
+	}
+	
+	public int getBackups() throws IOException{
+		if(file.length()==0)
+			return 0;
+		RandomAccessFile rand = new RandomAccessFile(file, "rw");
+		int backups = rand.readInt();
+		rand.close();
+		return backups;
 	}
 	
 	public void backup(File other) throws IOException, DataFormatException{
@@ -35,6 +40,11 @@ public class BackupFile {
 			read+=rando.read(current, read, current.length-read);
 		rando.close();
 		
+		backup(current);
+	}
+	
+	public void backup(byte[] bytes) throws IOException, DataFormatException{
+		byte[] current = bytes;
 		
 		RandomAccessFile rand = new RandomAccessFile(file, "rw");
 		if(rand.length()==0){
@@ -53,7 +63,7 @@ public class BackupFile {
 			long oldPos = rand.readLong(); //previous backups header
 			int length = rand.readInt();
 			byte[] old = new byte[length];
-			read = 0;
+			int read = 0;
 			while(read<length)
 				read+=rand.read(old, read, length-read);
 			//decompress the old data
@@ -91,7 +101,7 @@ public class BackupFile {
 		rand.write(data);
 	}
 	
-	public void revertTo(File other) throws IOException, DataFormatException, ClassNotFoundException{
+	public byte[] getReversion() throws IOException, DataFormatException, ClassNotFoundException{
 		RandomAccessFile rand = new RandomAccessFile(file, "rw");
 		int backups = rand.readInt();
 		long pos = rand.readLong();
@@ -106,15 +116,13 @@ public class BackupFile {
 			read+=rand.read(old, read, length-read);
 		//decompress backup
 		old = ZipUtil.decompress(old);
-		FileOutputStream fos = new FileOutputStream(other);
-		fos.write(old);
-		fos.close();
+		byte[] ret = old;
 		
 		//### update this file ###
 		if(backups==1){ //delete the file
+			rand.setLength(0);
 			rand.close();
-			file.delete();
-			return;
+			return ret;
 		}
 		else{
 			//undo the last backup compression
@@ -145,5 +153,13 @@ public class BackupFile {
 			rand.setLength(newLength);
 			rand.close();
 		}
+		return ret;
+	}
+	
+	public void revertTo(File other) throws IOException, DataFormatException, ClassNotFoundException{
+		byte[] old = getReversion();
+		FileOutputStream fos = new FileOutputStream(other);
+		fos.write(old);
+		fos.close();
 	}
 }

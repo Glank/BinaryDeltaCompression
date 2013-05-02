@@ -1,7 +1,8 @@
-package bdc.tool;
+package test;
 
 import java.io.File;
 
+import kirstein.compress.BackupFile;
 import kirstein.compress.ZipUtil;
 
 public class TestBackupFile {
