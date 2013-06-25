@@ -9,7 +9,7 @@ you can save a lot of space by recording the changes to the files rather than co
 
 This project is my own implementation of a tiny binary delta compression algorithm.
 This distribution comes with an example GUI application that can be used to create and revert from compressed backup files.
-To run the application, download the "BackupTool_1_1.jar" and double click on it: if you have java installed correctly it should open a new window.
+To run the application, download the <a href="https://github.com/Glank/BinaryDeltaCompression/raw/master/BackupTool_1_1.jar">"BackupTool_1_1.jar"</a> and double click on it: if you have java installed correctly it should open a new window.
 If you have trouble running it that way, you can go into the command prompt or terminal and type "java -jar BackupTool_1_1.jar".
 
 For developers, there are two simple usages of this code...
@@ -22,8 +22,8 @@ First is an in-memory backup of some raw binary data:
     //you have some old data and some current data
     byte[] old, current;
     ...
-    //you can store the old data using the current dat
-    Backup backup = new Backup(old,current); a
+    //you can store the old data using the current data
+    Backup backup = new Backup(old,current);
     ...
     //then retrieve it from the current data at a later date
     old = backup.revert(current);
