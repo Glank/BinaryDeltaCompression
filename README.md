@@ -9,7 +9,8 @@ you can save a lot of space by recording the changes to the files rather than co
 
 This project is my own implementation of a tiny binary delta compression algorithm.
 This distribution comes with an example GUI application that can be used to create and revert from compressed backup files.
-To run the application, download the <a href="https://github.com/Glank/BinaryDeltaCompression/raw/master/BackupTool_1_1.jar">"BackupTool_1_1.jar"</a> and double click on it: if you have java installed correctly it should open a new window.
+To run the application, download the <a href="https://github.com/Glank/BinaryDeltaCompression/raw/master/BackupTool_1_1.jar">"BackupTool_1_1.jar"</a> 
+and double click on it: if you have java installed correctly it should open a new window.
 If you have trouble running it that way, you can go into the command prompt or terminal and type "java -jar BackupTool_1_1.jar".
 
 For developers, there are two simple usages of this code...
@@ -28,7 +29,7 @@ First is an in-memory backup of some raw binary data:
     //then retrieve it from the current data at a later date
     old = backup.revert(current);
     
-The kirstein.compress.Backup object is serializable, so it can be easily converted to and from binary as such:
+The glank.app.compress.Backup object is serializable, so it can be easily converted to and from binary as such:
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -48,7 +49,7 @@ Optionally, the included ZipUtil can be used to further deflate the data at the 
 On Disk
 -------
 
-You can also store a stack of backups to a kirstein.compress.BackupFile.
+You can also store a stack of backups to a glank.app.compress.BackupFile.
     
     BackupFile backups = new BackupFile(new java.io.File("where/to/put/backup.data"))
     ...
