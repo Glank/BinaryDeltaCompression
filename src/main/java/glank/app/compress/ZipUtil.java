@@ -1,4 +1,4 @@
-package kirstein.compress;
+package glank.app.compress;
 
 import java.io.ByteArrayOutputStream;
 import java.util.zip.DataFormatException;

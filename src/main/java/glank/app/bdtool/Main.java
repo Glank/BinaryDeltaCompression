@@ -1,4 +1,4 @@
-package bdc.tool;
+package glank.app.bdtool;
 
 public class Main {
 	public static void main(String[] args){

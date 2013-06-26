@@ -1,4 +1,4 @@
-package kirstein.compress;
+package glank.app.compress;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -95,7 +95,6 @@ public class BackupFile {
 	}
 	
 	private void writeBackupData(RandomAccessFile rand, long oldPos, byte[] data) throws IOException{
-		System.out.println("Writing Backup to: " + rand.getFilePointer());
 		rand.writeLong(oldPos); //location of prev backup head
 		rand.writeInt(data.length);
 		rand.write(data);

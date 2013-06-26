@@ -1,4 +1,4 @@
-package bdc.tool;
+package glank.app.bdtool;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,7 +8,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
-import kirstein.compress.BackupFile;
+import glank.app.compress.BackupFile;
 
 public class BDCEventHandler implements ActionListener{
 	
@@ -18,7 +18,6 @@ public class BDCEventHandler implements ActionListener{
 		this.parent = parent;
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand()=="backup") backup();
 		else if(e.getActionCommand()=="revert") revert();
@@ -32,12 +31,10 @@ public class BDCEventHandler implements ActionListener{
 	private void selectBackup() {
 		JFileChooser jfc = new JFileChooser();
 		FileFilter filter = new FileFilter(){
-			@Override
 			public boolean accept(File path) {
 				return path.getAbsolutePath().endsWith(".bdc");
 			}
 
-			@Override
 			public String getDescription() {
 				return "BDC Backup Files";
 			}

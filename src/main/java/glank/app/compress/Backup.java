@@ -1,4 +1,4 @@
-package kirstein.compress;
+package glank.app.compress;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;

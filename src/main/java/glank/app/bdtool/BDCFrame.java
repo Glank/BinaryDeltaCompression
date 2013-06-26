@@ -1,4 +1,4 @@
-package bdc.tool;
+package glank.app.bdtool;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
