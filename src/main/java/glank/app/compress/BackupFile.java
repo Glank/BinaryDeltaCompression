@@ -15,6 +15,7 @@ public class BackupFile {
 	private File file;
 	
 	public BackupFile(File file) throws IOException{
+		System.out.println(file.getPath());
 		this.file = file;
 		if(!file.exists())
 			file.createNewFile();

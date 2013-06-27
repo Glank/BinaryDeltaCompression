@@ -1,0 +1,2 @@
+cd ~/BinaryDeltaCompression
+mvn clean compile test

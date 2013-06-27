@@ -2,10 +2,8 @@ package glank.app.bdtool;
 
 import glank.app.compress.BackupFile;
 import java.io.File;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
+import java.util.Scanner;
+import java.io.PrintWriter;
 
 public class Archiver{
 
@@ -14,7 +12,7 @@ public class Archiver{
 			printUsage();
 		else if(args[0].equals("-a"))
 			archive(args[1], args[2]);
-		else if(args[1].equals("-d"))
+		else if(args[0].equals("-d"))
 			dearchive(args[2], args[1]);
 		else
 			printUsage();
@@ -32,8 +30,8 @@ public class Archiver{
 		if(!target.exists())
 			target.mkdir();
 
-		BackupFile archive = new BackupFile(new File(dirOut+File.separator+dirIn+".arc"));
-		ObjectOutputStream nameFile = new ObjectOutputStream(new FileOutputStream(dirOut+File.separator+"names.log"));
+		BackupFile archive = new BackupFile(new File(dirOut+File.separator+"backup.arc"));
+		PrintWriter nameFile = new PrintWriter(new File(dirOut+File.separator+"names.log"));
 
 		File[] files = source.listFiles();
 		for(int i = 0; i < files.length; i++){
@@ -41,8 +39,8 @@ public class Archiver{
 			if(file.isDirectory())
 				archive(file.getAbsolutePath(),dirOut+File.separator+file.getName());
 			else{
+				nameFile.println(file.getName());
 				archive.backup(file);
-				nameFile.writeObject(file.getName());
 			}
 		}
 		nameFile.close();
@@ -55,11 +53,11 @@ public class Archiver{
 		if(!target.exists())
 			target.mkdir();
 
-		BackupFile backup =	new BackupFile(new File(dirIn+File.separator+dirOut+".arc"));
-		ObjectInputStream nameFile = new ObjectInputStream(new FileInputStream(dirIn+File.separator+"names.log"));
+		BackupFile backup =	new BackupFile(new File(dirIn+File.separator+"backup.arc"));
+		Scanner nameFile = new Scanner(new File(dirIn+File.separator+"names.log"));
 
 		while(backup.getBackups() > 0)
-			backup.revertTo(new File(dirOut+File.separator+(String)nameFile.readObject()));
+			backup.revertTo(new File(dirOut+File.separator+nameFile.nextLine()));
 		nameFile.close();
 
 		File[] files = archive.listFiles();
